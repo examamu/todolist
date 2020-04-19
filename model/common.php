@@ -1,5 +1,11 @@
 <?php
 
+function login_confirm() {
+  if(isset($_SESSION['user_id']) !== TRUE){
+    header('Location:./login.php');
+  }
+}
+
 function get_db_connect() {
   try {
       // データベースに接続
@@ -12,6 +18,21 @@ function get_db_connect() {
 
   return $dbh;
 }
+
+//タスクデータを取得
+function get_tasks_all($dbh,$user_id){
+  try{
+      $sql = 'SELECT * from tasks WHERE user_id = ?';
+      $stmt = $dbh->prepare($sql);
+      $stmt->bindValue(1,$user_id,PDO::PARAM_INT);
+      $stmt->execute();
+      $rows = $stmt->fetchAll();
+      return $rows;
+  }catch(PDOException $e){
+      throw $e;
+  }
+}
+
 
 //ユーザーデータを表示
 function get_member_data($dbh, $email, $password) {
@@ -31,5 +52,39 @@ function get_member_data($dbh, $email, $password) {
   }
 }
 
+// //予定を新規登録
+// function insert_task_data($dbh){
+//   $datetime = date('YmdHis');
+
+// }
+
+
+
+
+//taskの削除
+function delete_task_data($dbh,$task_id){
+  try{
+    $sql = 'DELETE FROM tasks WHERE id = ?';
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(1,$task_id,PDO::PARAM_INT);
+    $stmt->execute();
+  }catch(PDOException $e){
+    throw $e;
+  }
+}
+
+//日付計算
+function remainDate($day) {
+  return intval((strtotime($day) - strtotime(date('Y/m/d'))) / (60*60*24));
+}
+
+function change_class_color(){
+  //カラーの変更に際して、日付の取得
+  //もし１週間前なら黄色
+  //もし3日前ならオレンジ
+  //当日なら赤
+  //継続案件なら青
+  //それ以外なら緑
+}
 
 ?>
