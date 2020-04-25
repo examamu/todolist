@@ -19,15 +19,39 @@ function get_db_connect() {
   return $dbh;
 }
 
+function get_as_array($dbh,$sql,$params){
+  try{
+    if(empty($params) === TRUE){
+      return FALSE;
+    }
+    $stmt = $dbh->prepare($sql);
+    foreach($params as $data){
+      if($data[2] === 'INT'){
+        $stmt->bindValue($data[0],$data[1],PDO::PARAM_INT);
+      }else{
+        $stmt->bindValue($data[0],$data[1],PDO::PARAM_STR);
+      }
+    }
+    $stmt->execute();
+    if(count($params) > 1){
+      $rows = $stmt->fetchAll();
+    }else{
+      $rows = $stmt->fetch();
+    }
+    return $rows;
+  }catch(PDOException $e){
+    throw $e;
+  }
+}
+
 //タスクデータを取得
 function get_tasks_all($dbh,$user_id){
   try{
-      $sql = 'SELECT * from tasks WHERE user_id = ?';
-      $stmt = $dbh->prepare($sql);
-      $stmt->bindValue(1,$user_id,PDO::PARAM_INT);
-      $stmt->execute();
-      $rows = $stmt->fetchAll();
-      return $rows;
+      $sql = 'SELECT * from task WHERE user_id = ?';
+      $params = array(
+                  array(1,$user_id,'INT')
+                );
+      return get_as_array($dbh,$sql,$params);
   }catch(PDOException $e){
       throw $e;
   }
@@ -37,7 +61,7 @@ function get_tasks_all($dbh,$user_id){
 //ユーザーデータを表示
 function get_member_data($dbh, $email, $password) {
   try{
-    $sql = 'SELECT id 
+    $sql = 'SELECT id, passwd 
             FROM members 
             WHERE email = ? 
             AND passwd = ?';
@@ -52,11 +76,39 @@ function get_member_data($dbh, $email, $password) {
   }
 }
 
-// //予定を新規登録
-// function insert_task_data($dbh){
-//   $datetime = date('YmdHis');
+//新規登録にて重複しないようにemailでidを取得
+function get_member_email($dbh, $email){
+  try{
+    $sql = 'SELECT id
+            FROM members
+            WHERE email = ?';
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(1,$email,PDO::PARAM_STR);
+  }catch(PDOException $e){
+    throw $e;
+  }
+}
 
-// }
+
+//予定を新規登録
+function insert_task_data($dbh,$user_id,$task_name,$continue_task,$start_time,$finish_time){
+  $datetime = date('YmdHis');
+  try{
+    $sql = 'INSERT INTO 
+            tasks(user_id,name,continueTask,start,finish)  
+            VALUES(?,?,?,?,?)';
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(1,$user_id,PDO::PARAM_INT);
+    $stmt->bindValue(2,$task_name,PDO::PARAM_STR);
+    $stmt->bindValue(3,$continue_task,PDO::PARAM_INT);
+    $stmt->bindValue(4,$start_time,PDO::PARAM_STR);
+    $stmt->bindValue(5,$finish_time,PDO::PARAM_STR);
+    $stmt->execute();
+  }catch(PDOException $e){
+    throw $e;
+  }
+
+}
 
 
 
@@ -72,6 +124,28 @@ function delete_task_data($dbh,$task_id){
     throw $e;
   }
 }
+
+
+//ユーザーの新規登録
+function insert_sign_up($dbh,$user_name,$password,$email) {
+  try{
+      $sql = 'INSERT INTO members(name,passwd,email) VALUES(?,?,?)';
+      $stmt = $dbh->prepare($sql);
+      $stmt->bindValue(1,$user_name, PDO::PARAM_STR);
+      $stmt->bindValue(2,$password, PDO::PARAM_STR);
+      $stmt->bindValue(3,$email, PDO::PARAM_STR);
+      $stmt->execute();
+  } catch (PDOException $e) {
+      throw $e;
+  }
+}
+
+
+
+
+
+
+
 
 //日付計算
 function remainDate($day) {
