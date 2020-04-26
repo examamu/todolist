@@ -2,23 +2,21 @@
 define("TITLE" , "Owhatask | トップページ");
 ini_set('display_errors', "On");
 require_once('./conf/const.php');
+require_once('./model/class.php');
+require_once('./model/db.php');
 require_once('./model/common.php');
 require_once('./model/index_model.php');
 $err_msg = array();
 
 session_start();
-if(isset($_SESSION['user']) !== TRUE){
-	header('Location:./login.php');
-}
+$_SESSION['user'] = 1;
+$user_id = 1;
+// if(isset($_SESSION['user']) !== TRUE){
+// 	header('Location:./login.php');
+// }
 
 try{
-	$dbh = get_db_connect();
-}catch(PDOException $e){
-	$err_msg[] = 'データベースに接続できていません。'.$e->getMessage();
-}
-
-try{
-	$tasks_data = get_tasks_all($dbh, $user_id);
+	$tasks_data = get_tasks_all($user_id);
 }catch(PDOException $e){
 	$err_msg[] = 'データの取得に失敗しました。'.$e->getMessage();
 }
@@ -32,4 +30,5 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
 
 include('./header.php');
 include('./view/index_view.php'); 
+echo 'aaaaaa';
 ?>
