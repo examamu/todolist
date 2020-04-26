@@ -1,35 +1,37 @@
 <?php
 
-function get_db_connect() {
-  try {
-      // データベースに接続
-      $dbh = new PDO(DSN, DB_USER, DB_PASSWD, array(PDO::MYSQL_ATTR_INIT_COMMAND => DB_CHARSET));
-      $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-  } catch (PDOException $e) {
-      throw $e;
-  }
 
-  return $dbh;
-}
-
-//ユーザーデータを表示
-function get_member_data($dbh, $email, $password) {
-  try{
-    $sql = 'SELECT id 
-            FROM members 
-            WHERE email = ? 
-            AND passwd = ?';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(1,$email,PDO::PARAM_STR);
-    $stmt->bindValue(2,$password,PDO::PARAM_STR);
-    $stmt->execute();
-    $row = $stmt->fetch();
-    return $row;
-  } catch (PDOException $e) {
-    throw $e;
+function login_confirm() {
+  if(isset($_SESSION['user_id']) !== TRUE){
+    header('Location:./login.php');
   }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+//日付計算
+function remainDate($day) {
+  return intval((strtotime($day) - strtotime(date('Y/m/d'))) / (60*60*24));
+}
+
+function change_class_color(){
+  //カラーの変更に際して、日付の取得
+  //もし１週間前なら黄色
+  //もし3日前ならオレンジ
+  //当日なら赤
+  //継続案件なら青
+  //それ以外なら緑
+}
 
 ?>

@@ -50,7 +50,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     }
 
 }//REQUEST_METHOD 終了
-var_dump($member_data);
 include('./header.php');
 include('./view/login_view.php'); 
 ?>
