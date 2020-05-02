@@ -7,19 +7,6 @@ function login_confirm() {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 //日付計算
 function remainDate($day) {
   return intval((strtotime($day) - strtotime(date('Y/m/d'))) / (60*60*24));
