@@ -16,8 +16,8 @@
 				<h2><?php echo $data["task_name"];?></h2>
 				<form method = "POST">
 					<p class="delete_button">
-                        <input type = "hidden" name = "delete_id" value = "<?php echo $data["id"] ?>">
-						<input type = "submit" name = "delete<?php echo $data["id"] ?>" value = "Owatta!">
+                        <input type = "hidden" name = "delete_id" value = "<?php echo $data["task_id"] ?>">
+						<input type = "submit" name = "delete<?php echo $data["task_id"] ?>" value = "Owatta!">
 					</p>
 				</form>
 			<?php

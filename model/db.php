@@ -13,7 +13,15 @@ function send_Get_data_class($sql, $get_placeholder){
 
 //SQL文を用意
 function get_tasks_all($get_placeholder){
-  $sql = 'SELECT task_name from task WHERE user_id = ?';
+  $sql = 'SELECT task_id,
+                 user_id,
+                 task_name,
+                 note,
+                 start_time,
+                 finish_time,
+                 create_datetime
+          FROM task 
+          WHERE user_id = ?';
   return send_Get_data_class($sql, $get_placeholder);
 }
 
@@ -27,18 +35,6 @@ function get_member_email($get_placeholder){
     $sql = 'SELECT id FROM members WHERE email = ?';
     return send_Get_data_class($sql, $get_placeholder);
 }
-  
-  //taskの削除
-  function delete_task_data($dbh,$task_id){
-    try{
-      $sql = 'DELETE FROM task WHERE id = ?';
-      $stmt = $dbh->prepare($sql);
-      $stmt->bindValue(1,$task_id,PDO::PARAM_INT);
-      $stmt->execute();
-    }catch(PDOException $e){
-      throw $e;
-    }
-  }
   
   //ユーザーの新規登録
   function insert_sign_up($dbh,$user_name,$password,$email) {
