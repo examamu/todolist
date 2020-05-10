@@ -46,7 +46,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             //セッションにidを登録
             $_SESSION['user_id'] = $member_data[0]['id'];
             //マイページへ遷移
-            header('Location:./mypage.php');
+            header('Location:./index.php');
         }else{
             $err_msg[] = 'メールアドレスかパスワードがあっていません';
         }
