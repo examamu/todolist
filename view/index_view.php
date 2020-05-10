@@ -1,6 +1,6 @@
 <main>
         <h1>今日やること</h1>
-		<form method="POST">
+		<form method="GET">
 			<select>
 				<option value="1">期日が近い順</option>
 				<option value="2">期日が遠い順</option>
@@ -13,9 +13,10 @@
 		<ul class="todayTaskList">
 <?php foreach($tasks_data as $data){?>
 			<li class="todayTask">
-				<h2><?php echo $data["name"];?></h2>
-				<form method = "GET">
+				<h2><?php echo $data["task_name"];?></h2>
+				<form method = "POST">
 					<p class="delete_button">
+                        <input type = "hidden" name = "delete_id" value = "<?php echo $data["id"] ?>">
 						<input type = "submit" name = "delete<?php echo $data["id"] ?>" value = "Owatta!">
 					</p>
 				</form>

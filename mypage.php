@@ -8,9 +8,9 @@ require_once('./model/db.php');
 require_once('./model/index_model.php');
 $err_msg = array();
 session_start();
-// login_confirm();
-// $user_id = $_SESSION['user_id'];
-$user_id = 2;
+login_confirm();
+$user_id = $_SESSION['user_id'];
+
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
 	$delete_task = 'delete'.$_POST['delete_id'];
@@ -25,8 +25,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 	}
 }
 
+$get_tasks_placeholder = array();
+//user_id
+$get_tasks_placeholder[] = array('placeholder'=>$user_id, 'data_type'=>'integer');
+
 try{
-	$tasks_data = get_tasks_all($user_id);
+	$tasks_data = get_tasks_all($get_tasks_placeholder);
 }catch(PDOException $e){
 	$err_msg[] = "データを取得できませんでした".$e->getMessage();
 }
