@@ -10,7 +10,7 @@
 <body>
 	<header>
 		<div class="header_inner">
-			<div class="logo"><a href = "./mypage.php"><img src="images/logo.png" alt="To Do リスト"></a></div>
+			<div class="logo"><a href = "./index.php"><img src="images/logo.png" alt="To Do リスト"></a></div>
 			<p>このページは日に日に少しずつプログラミングを勉強していくつばさが管理しています。</p>
 			<form method = "POST">
 				<input type = "submit" name = "logout" value = "ログアウト">
