@@ -1,9 +1,7 @@
 <?php
 //先頭大文字
 Class Db {
-
     protected $dbh;
-
     public function __construct(){        
         try {
             $this->dbh = new PDO(DSN, DB_USER, DB_PASSWD, array(PDO::MYSQL_ATTR_INIT_COMMAND => DB_CHARSET));
@@ -56,37 +54,25 @@ Class Get_data extends Db{
 
 
 Class Execute_data extends Db{
-    public function execute_data($sql, $bind_value){
+
+    public function execute_process($sql, $data_param){
         try{
+            $bind_value_num = 1;
             $stmt = $this->dbh->prepare($sql);
-            foreach($bind_value as $data){
-                $bind_value_num = $data[0];
-                $bind_value_praceholder = $data[1];
-                $data_type = $data[2];
-                
+            foreach($data_param as $data){
+                $placeholder = $data['placeholder'];
+                $data_type = $data['data_type'];
                 if($data_type === 'integer'){
-                    $stmt->bindValue($bind_value_num, $bind_value_praceholder, PDO::PARAM_INT);
+                    $stmt->bindValue($bind_value_num, $placeholder, PDO::PARAM_INT);
                 }else{
-                    $stmt->bindValue($bind_value_num, $bind_value_praceholder, PDO::PARAM_STR);
+                    $stmt->bindValue($bind_value_num, $placeholder, PDO::PARAM_STR);
                 }
+                $bind_value_num++;
             }
             $stmt->execute();
         }catch(PDOException $e){
             throw $e;
         }
-    }
-
-    public function insert($sql,$insert_placeholder){
-        $data_param = array();
-        $bind_value_num = 1;
-        foreach ($insert_placeholder as $data){
-            $bind_value_praceholder = $data['placeholder'];
-            $data_type = $data['data_type'];
-            $data_param[] = array($bind_value_num, $bind_value_praceholder, $data_type);
-            $bind_value_num++;
-        }
-        $data_param[] = array($bind_value_num, date('YmdHis') , 'string');
-        return $this->execute_data($sql, $data_param);
     }
 }
 

@@ -11,15 +11,6 @@ function send_Get_data_class($sql, $get_placeholder){
   }
 }
 
-function send_insert($sql, $insert_placeholder){
-  try{
-    $execute_class = new Execute_data;
-    return $execute_class->insert($sql, $insert_placeholder);
-  }catch(PDOException $e) {
-    throw $e;
-  }
-}
-
 //SQL文を用意
 function get_tasks_all($get_placeholder){
   $sql = 'SELECT task_name from task WHERE user_id = ?';
@@ -36,15 +27,6 @@ function get_member_email($get_placeholder){
     $sql = 'SELECT id FROM members WHERE email = ?';
     return send_Get_data_class($sql, $get_placeholder);
 }
- 
-
-//予定を新規登録
-function insert_task_data($insert_placeholder){
-    $sql = 'INSERT INTO task(user_id,task_name,note,start_time,finish_time,create_datetime) VALUES(?,?,?,?,?,?)';
-    //create_datetime
-    return send_insert($sql,$insert_placeholder);
-}
-  
   
   //taskの削除
   function delete_task_data($dbh,$task_id){
