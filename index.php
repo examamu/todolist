@@ -17,11 +17,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 	if(isset($_POST[$delete_task]) === TRUE){
 		$delete_id = $_POST['delete_id'];
 		try{
-			delete_task_data($dbh,$delete_id);
+			delete_task($delete_id);
 			$success_msg = '削除が完了しました！';
 		}catch(PDOException $e){
 			$err_msg[] = '削除できませんでした'.$e->getMessage();
 		}
+	}else{
+		$err_msg[] = "不正な操作です";
 	}
 }
 
