@@ -1,13 +1,13 @@
 <main>
         <h1>今日やること</h1>
 		<form method="GET">
-			<select name = "sort">
-				<option value="hurry">期日が近い順</option>
-				<option value="slowly">期日が遠い順</option>
-				<option value="old">登録が古い順</option>
-				<option value="new">登録が新しい順</option>
-				<option value="short">所要日数が短い順</option>
-				<option value="long">所要日数が長い順</option>
+			<select>
+				<option value="1">期日が近い順</option>
+				<option value="2">期日が遠い順</option>
+				<option value="3">登録が古い順</option>
+				<option value="4">登録が新しい順</option>
+				<option value="5">所要日数が短い順</option>
+				<option value="6">所要日数が長い順</option>
 			</select>
 		</form>
 		<ul class="todayTaskList">
@@ -16,8 +16,8 @@
 				<h2><?php echo $data["task_name"];?></h2>
 				<form method = "POST">
 					<p class="delete_button">
-                        <input type = "hidden" name = "delete_id" value = "<?php echo $data["task_id"] ?>">
-						<input type = "submit" name = "delete<?php echo $data["task_id"] ?>" value = "Owatta!">
+                        <input type = "hidden" name = "delete_id" value = "<?php echo $data["id"] ?>">
+						<input type = "submit" name = "delete<?php echo $data["id"] ?>" value = "Owatta!">
 					</p>
 				</form>
 			<?php

@@ -1,15 +1,17 @@
 <?php
-
-function get_tasks_all($dbh){
+  //taskの削除
+  function delete_task($task_id){
     try{
-        $sql = 'SELECT * from tasks';
-        $stmt = $dbh->prepare($sql);
-        $stmt->execute();
-        $rows = $stmt->fetchAll();
-        return $rows;
+      $sql = 'DELETE FROM task WHERE task_id = ?';
+      $post_data = array(
+          array(
+              'placeholder' => $task_id,
+              'data_type' => 'integer'
+          ));
+      $execute_class = new Execute_data(); 
+      $execute_class->execute_process($sql, $post_data);
     }catch(PDOException $e){
-        throw $e;
+      throw $e;
     }
-}
-
+  }
 ?>

@@ -1,109 +1,71 @@
 <?php
-require_once("var.php");
-require_once("mysql.php");
+define("TITLE" , "Owhatask | マイページ");
+ini_set('display_errors', "On");
+require_once('./conf/const.php');
+require_once('./model/common.php');
+require_once('./model/class.php');
+require_once('./model/db.php');//form_model内に入れてしまう
+require_once('./model/form.php');
+session_start();
+login_confirm();
+$select_date_Class = new Option_date;
+$select_date = $select_date_Class->select_date();
+
+$err_msg = array();
+
+
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    
+    $post_data = array();
+    //user_id
+    $user_id = $_SESSION['user_id'];
+    $post_data[] = array('placeholder'=>$user_id, 'data_type'=>'integer');
+
+    //task_name
+    if(isset($_POST['name']) === TRUE){
+        $task_name = $_POST['name'];
+        $post_data[] = array('placeholder'=>$task_name, 'data_type'=>'string');
+    }else{
+        $err_msg[] = 'タスク名を入れてください';
+    }
+
+    //note
+    $note = $_POST['note'];
+    if(!empty($_POST['note'])){
+        $post_data[] = array('placeholder'=>$note, 'data_type'=>'string');
+    }else{
+        $post_data[] = array('placeholder'=>NULL, 'data_type'=>'string');
+    }
+    
+
+    //start_time
+    if(!empty($_POST['start_year']) && !empty($_POST['start_month']) && !empty($_POST['start_day']) ){
+        $start_time = $_POST['start_year'].$_POST['start_month'].$_POST['start_days'];
+        $post_data[] = array('placeholder'=>$start_time, 'data_type'=>'string');
+    }else{
+        $post_data[] = array('placeholder'=>NULL, 'data_type'=>'string');
+    }
+
+    //finish_time
+    if(!empty($_POST['finish_year']) && !empty($_POST['finish_month']) && !empty($_POST['finish_day'])){
+        $finish_time = $_POST['finish_year'].$_POST['finish_month'].$_POST['finish_days'];
+        $post_data[] = array('placeholder'=>$finish_time, 'data_type'=>'string');
+    }else{
+        $post_data[] = array('placeholder'=>NULL, 'data_type'=>'string');
+    }
+
+    if(count($err_msg) === 0){
+        //create_datetime
+        $create_datetime = date('YmdHis');
+        $post_data[] = array('placeholder'=>$create_datetime, 'data_type'=>'string');
+        try{
+            insert_task_data($post_data);
+        }catch(PDOException $e){
+            $err_msg[] = 'インサートできませんでした。'.$e->getMessage;
+        }      
+    }
+}//REQUEST_METHOD終了カッコ
+
+include('./header.php');
+include('./view/form_view.php'); 
 ?>
-
-
-<!doctype html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>追加ページ</title>
-</head>
-
-<body>
-	<form action="" method="post">
-		<p>
-			タスク名：<input type="text" size="40" name="name">
-		</p>
-		
-		<input id="shortTask" type="radio" name="contTask" value="0">短期案件
-		<input id="continueTask" type="radio" name="contTask" value="1">継続案件
-	
-		<div id="date">
-			
-<!------------------▽ここから開始期間▽------------------>
-		<p id="start_date">	
-			開始期間：<select name="start_year">
-			<?php for($i = $thisYear-1; $i<=$thisYear+10; $i++): ?>
-				<?php if($i < $thisYear): ?>
-					<option name ="empty"></option>年
-				<?php else :?>
-					<option name="<?php echo $i ?>"><?php echo $i ?></option>
-				<?php endif; ?>
-			<?php endfor ;?></select> 年
-			
-			
-			
-			<select name="start_month">
-			<?php for($i = 0; $i<=12; $i++): ?>
-				<?php if($i === 0): ?>
-					<option name ="empty"></option>月
-				<?php else :?>
-					<option name="<?php echo $i ?>"><?php echo $i ?></option>
-				<?php endif; ?>
-			<?php endfor ;?></select> 月
-			
-			
-			<select name="start_day">
-			<?php for($i = 0; $i<=31; $i++): ?>
-				<?php if($i === 0): ?>
-					<option name ="empty"></option>日
-				<?php else: ?>
-					<option name="<?php echo $i ?>"><?php echo $i ?></option>
-				<?php endif; ?>
-			<?php endfor; ?></select> 日
-		</p>
-		
-			
-<!------------------▽ここから終了期間▽------------------>			
-		<p id="finish_date">
-			終了期間：<select name="finish_year">
-			<?php for($i = $thisYear-1; $i<=$thisYear+10; $i++): ?>
-				<?php if($i < $thisYear): ?>
-					<option name ="empty"></option>年
-				<?php else: ?>
-					<option name="<?php echo $i ?>"><?php echo $i ?></option>
-				<?php endif; ?>
-			<?php endfor; ?></select> 年
-			
-			
-			<select name="finish_month">
-			<?php for($i = 0; $i<=12; $i++): ?>
-				<?php if($i === 0): ?>
-					<option name ="empty"></option>月
-				<?php else: ?>
-					<option name="<?php echo $i ?>"><?php echo $i ?></option>
-				<?php endif; ?>
-			<?php endfor; ?></select> 月
-			
-		
-		
-			<select name="finish_day">
-			<?php for($i = 0; $i<=31; $i++): ?>
-				<?php if($i === 0): ?>
-					<option name ="empty"></option>日
-				<?php else: ?>
-				<option name="<?php echo $i ?>"><?php echo $i ?></option>
-				<?php endif; ?>
-			<?php endfor; ?></select> 日
-		</p>
-		</div>
-		<input type="submit" value="送信する">
-	</form>
-	<a href="http://test.mecha-f.com">トップへ戻る</a>
-	
-	<!------------------▽javascript▽------------------>
-	<script>
-			document.getElementById("date").style.display ="none";
-			document.getElementById("shortTask").onchange = function(){
-  			document.getElementById("date").style.display ="block";}
-			document.getElementById("continueTask").onchange = function(){
-  			document.getElementById("date").style.display ="none";}
-  
-		
-				
-	</script>
-</body>
-	
-</html>

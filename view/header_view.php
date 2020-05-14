@@ -10,8 +10,11 @@
 <body>
 	<header>
 		<div class="header_inner">
-			<div class="logo"><img src="images/logo.png" alt="To Do リスト"></div>
+			<div class="logo"><a href = "./index.php"><img src="images/logo.png" alt="To Do リスト"></a></div>
 			<p>このページは日に日に少しずつプログラミングを勉強していくつばさが管理しています。</p>
+			<form method = "POST">
+				<input type = "submit" name = "logout" value = "ログアウト">
+			</form>
 		</div>
 	</header>
 	
@@ -21,4 +24,7 @@
         <li><?php echo $data; ?></li>
 	<?php } ?>
 	</ul>
+<?php } ?>
+<?php if(isset($success_msg) === TRUE) { ?>
+	<p><?php echo $success_msg ?></p>
 <?php } ?>
